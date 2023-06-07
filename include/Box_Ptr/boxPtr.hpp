@@ -2,16 +2,33 @@
 
 #include <memory>
 namespace bp {
+	namespace detail{
+		template<typename T>
+		static auto checkDynCopyableHelper(T&&) -> decltype(std::declval<T>()->copy(), std::true_type{});
+		
+		static std::false_type checkDynCopyableHelper(...);
+		
+		template<typename T>
+		constexpr auto checkDynCopyable = std::is_same_v<std::true_type, decltype(checkDynCopyableHelper(std::declval<T>()))>;
+	}
+	
 	template<typename T>
 	class BoxPtr{
 	protected:
 		T* ptr;
-		
+	
 	public:
-		explicit BoxPtr(T* ptr) : ptr(ptr) {
+		explicit BoxPtr(T* ptr = nullptr) : ptr(ptr) {
 		}
 		
-		BoxPtr(const BoxPtr<T>& boxPtr) : BoxPtr(new T{*boxPtr.ptr}){
+		BoxPtr(const BoxPtr<T>& boxPtr) :
+			BoxPtr([&]{
+					   if constexpr(std::is_abstract_v<T> && detail::checkDynCopyable<T*>)
+						   return boxPtr.ptr->copy();
+					   else
+						   return new T{*boxPtr.ptr};
+				   }()
+			){
 		}
 		
 		BoxPtr(BoxPtr<T>&& boxPtr) noexcept : BoxPtr(boxPtr.ptr){
@@ -41,7 +58,10 @@ namespace bp {
 			if (&boxPtr == this)
 				return  *this;
 			delete ptr;
-			ptr = new T{*boxPtr.ptr};
+			if constexpr(std::is_abstract_v<T>)
+				ptr = boxPtr.ptr->copy();
+			else
+				ptr = new T{*boxPtr.ptr};
 			return *this;
 		}
 		
