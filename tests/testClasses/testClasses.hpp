@@ -43,5 +43,8 @@ protected:
 	int testValue;
 public:
 	explicit D(int testValue);
+	
 	std::string getName() override;
+	
+	int getTestValue() const;
 };

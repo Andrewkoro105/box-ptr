@@ -4,13 +4,14 @@
 namespace bp {
 	namespace detail{
 		template<typename T>
-		static auto checkDynCopyableHelper(T&&) -> decltype(std::declval<T>()->copy(), std::true_type{});
+		static auto checkDynCopyableHelper(T&&) -> decltype(std::declval<T>()->copy(), std::true_type{}){return {};};
 		
-		static std::false_type checkDynCopyableHelper(...);
+		[[maybe_unused]] static std::false_type checkDynCopyableHelper(...){return {};};
 		
 		template<typename T>
 		constexpr auto checkDynCopyable = std::is_same_v<std::true_type, decltype(checkDynCopyableHelper(std::declval<T>()))>;
 	}
+	
 	
 	template<typename T>
 	class BoxPtr{
@@ -23,12 +24,13 @@ namespace bp {
 		
 		BoxPtr(const BoxPtr<T>& boxPtr) :
 			BoxPtr([&]{
-					   if constexpr(std::is_abstract_v<T> && detail::checkDynCopyable<T*>)
-						   return boxPtr.ptr->copy();
-					   else
-						   return new T{*boxPtr.ptr};
-				   }()
-			){
+				if(boxPtr.ptr) {
+					if constexpr(std::is_abstract_v<T> && detail::checkDynCopyable<T*>)
+						return boxPtr.ptr->copy();
+					else
+						return new T{*boxPtr.ptr};
+				}
+			}()){
 		}
 		
 		BoxPtr(BoxPtr<T>&& boxPtr) noexcept : BoxPtr(boxPtr.ptr){
@@ -38,6 +40,10 @@ namespace bp {
 		
 		void reset(T* ptr_){
 			delete ptr;
+			ptr = ptr_;
+		}
+		
+		void set(T* ptr_){
 			ptr = ptr_;
 		}
 		
@@ -83,4 +89,10 @@ namespace bp {
 		return BoxPtr<R>{new T{std::forward<As>(args)...}};
 	}
 	
+	template<typename R, typename T>
+	BoxPtr<R> dynamicCast(BoxPtr<T>&& boxPtr){
+		R* r = dynamic_cast<R*>(boxPtr.get());
+		boxPtr.set(nullptr);
+		return BoxPtr<R>{r};
+	}
 }

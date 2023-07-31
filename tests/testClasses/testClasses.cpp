@@ -43,3 +43,7 @@ D::D(int testValue) : testValue(testValue) {}
 std::string D::getName() {
 	return "D";
 }
+
+int D::getTestValue() const {
+	return testValue;
+}
