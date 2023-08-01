@@ -23,12 +23,14 @@ namespace bp {
 		}
 		
 		BoxPtr(const BoxPtr<T>& boxPtr) :
-			BoxPtr([&]{
+			BoxPtr([&] () -> T*{
 				if(boxPtr.ptr) {
 					if constexpr(std::is_abstract_v<T> && detail::checkDynCopyable<T*>)
 						return boxPtr.ptr->copy();
 					else
 						return new T{*boxPtr.ptr};
+				} else {
+					return nullptr;
 				}
 			}()){
 		}

@@ -16,6 +16,11 @@ TEST(constructor, copy) {
 	ASSERT_EQ(A::exists, 2);
 	delete c;
 	ASSERT_EQ(A::exists, 1);
+	
+	auto bpNull{bp::BoxPtr<A>{nullptr}};
+	const auto& bpNull2{bpNull};
+	
+	ASSERT_EQ(bpNull2.get(), nullptr);
 }
 
 TEST(constructor, move) {
