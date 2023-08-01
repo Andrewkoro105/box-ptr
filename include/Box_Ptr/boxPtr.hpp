@@ -29,6 +29,8 @@ namespace bp {
 						return boxPtr.ptr->copy();
 					else
 						return new T{*boxPtr.ptr};
+				} else {
+					return nullptr;
 				}
 			}()){
 		}
