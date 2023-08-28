@@ -36,6 +36,15 @@ TEST(constructor, move) {
 	ASSERT_EQ(boxPtr1.get(), a);
 }
 
+TEST(constructor, derivedMove) {
+	A::clear();
+	bp::BoxPtr<D> boxPtr0(new D(42));
+	bp::BoxPtr<A> boxPtr1(std::move(boxPtr0));
+	ASSERT_EQ(A::exists, 1);
+	ASSERT_EQ(A::created, 1);
+	ASSERT_EQ(boxPtr1->getName(), "D");
+}
+
 TEST(constructor, make) {
 	A::clear();
 	bp::BoxPtr<A> boxPtr{bp::makeBoxPtr<A>()};
@@ -43,5 +52,4 @@ TEST(constructor, make) {
 	ASSERT_EQ(boxPtr->getName(), "A");
 	bp::BoxPtr<A> boxPtr1{bp::makeBoxPtr<A, D>(1)};
 	ASSERT_EQ(boxPtr1->getName(), "D");
-	
 }
