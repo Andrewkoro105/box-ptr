@@ -1,7 +1,7 @@
 #pragma once
 
 #include <gtest/gtest.h>
-#include <Box_Ptr/boxPtr.hpp>
+#include <box-ptr/BoxPtr.hpp>
 
 class A{
 public:
@@ -12,7 +12,7 @@ public:
 	
 	A(const A& a);
 	
-	virtual std::string getName();
+	virtual std::string get_name();
 	
 	~A();
 	
@@ -22,7 +22,7 @@ public:
 
 class B {
 protected:
-	bp::BoxPtr<A> boxPtr;
+	bp::BoxPtr<A> box_ptr;
 
 public:
 	explicit B();
@@ -31,20 +31,20 @@ public:
 
 class C {
 protected:
-	bp::BoxPtr<A> boxPtr;
+	bp::BoxPtr<A> box_ptr;
 
 public:
-	explicit C(const bp::BoxPtr<A>& boxPtr);
+	explicit C(const bp::BoxPtr<A>& box_ptr);
 };
 
 
 class D : public A{
 protected:
-	int testValue;
+	int test_value;
 public:
-	explicit D(int testValue);
+	explicit D(int test_value);
 	
-	std::string getName() override;
+	std::string get_name() override;
 	
-	int getTestValue() const;
+	int get_test_value() const;
 };

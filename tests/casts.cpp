@@ -1,7 +1,7 @@
-#include "testClasses/testClasses.hpp"
+#include "test-classes/test-classes.hpp"
 
 TEST(casts, dynamic) {
-	bp::BoxPtr<A> boxPtr_A{bp::makeBoxPtr<A, D>(34)};
-	bp::BoxPtr<D> boxPtr_D{bp::dynamicCast<D>(std::move(boxPtr_A))};
-	ASSERT_EQ(boxPtr_D->getTestValue(), 34);
+	bp::BoxPtr<A> box_ptr__a{bp::make_box_ptr<A, D>(34)};
+	bp::BoxPtr<D> box_ptr__d{bp::dynamic_box_cast<D>(std::move(box_ptr__a))};
+	ASSERT_EQ(box_ptr__d->get_test_value(), 34);
 }

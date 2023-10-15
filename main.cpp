@@ -1,5 +1,5 @@
 #include <iostream>
-#include <Box_Ptr/boxPtr.hpp>
+#include <Box-Ptr/BoxPtr.hpp>
 
 class A{
 public:
@@ -10,14 +10,14 @@ public:
 
 class B {
 protected:
-	bp::BoxPtr<A> boxPtr;
+	bp::BoxPtr<A> box_ptr;
 	
 public:
-	explicit B(bp::BoxPtr<A> boxPtr) : boxPtr(new A{*boxPtr.get()}) {
+	explicit B(bp::BoxPtr<A> box_ptr) : box_ptr(new A{*box_ptr.get()}) {
 	}
 };
 
 int main() {
-	B b{bp::makeBoxPtr<A>()};
+	B b{bp::make_box_ptr<A>()};
 	return 0;
 }

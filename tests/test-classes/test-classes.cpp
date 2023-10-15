@@ -1,4 +1,4 @@
-#include "testClasses.hpp"
+#include "test-classes.hpp"
 
 int A::deleted = 0;
 int A::created = 0;
@@ -14,7 +14,7 @@ A::A(const A& a) {
 	++exists;
 }
 
-std::string A::getName() {
+std::string A::get_name() {
 	return "A";
 }
 
@@ -30,20 +30,20 @@ void A::clear() {
 }
 
 
-B::B() : boxPtr(new A{}) {
+B::B() : box_ptr(new A{}) {
 }
 
 
-C::C(const bp::BoxPtr<A>& boxPtr) : boxPtr(boxPtr) {
+C::C(const bp::BoxPtr<A>& box_ptr) : box_ptr(box_ptr) {
 }
 
 
-D::D(int testValue) : testValue(testValue) {}
+D::D(int test_value) : test_value(test_value) {}
 
-std::string D::getName() {
+std::string D::get_name() {
 	return "D";
 }
 
-int D::getTestValue() const {
-	return testValue;
+int D::get_test_value() const {
+	return test_value;
 }

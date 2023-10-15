@@ -5,16 +5,16 @@
 namespace bp {
 	namespace detail {
 		template<typename T>
-		static auto checkDynCopyableHelper(T&&) -> decltype(std::declval<T>()->copy(), std::true_type{}) {
+		static auto check_dyn_copyable_helper(T&&) -> decltype(std::declval<T>()->copy(), std::true_type{}) {
 			return {};
 		};
 		
-		[[maybe_unused]] static std::false_type checkDynCopyableHelper(...) {
+		[[maybe_unused]] static std::false_type check_dyn_copyable_helper(...) {
 			return {};
 		};
 		
 		template<typename T>
-		constexpr auto checkDynCopyable = std::is_same_v<std::true_type, decltype(checkDynCopyableHelper(std::declval<T>()))>;
+		constexpr auto check_dyn_copyable = std::is_same_v<std::true_type, decltype(check_dyn_copyable_helper(std::declval<T>()))>;
 	}
 	
 	
@@ -30,7 +30,7 @@ namespace bp {
 		BoxPtr(const BoxPtr<T>& other) :
 			BoxPtr([&]() -> T* {
 				if(other.ptr) {
-					if constexpr(std::is_abstract_v<T> && detail::checkDynCopyable<T*>)
+					if constexpr(std::is_abstract_v<T> && detail::check_dyn_copyable<T*>)
 						return other.ptr->copy();
 					else
 						return new T{*other.ptr};
@@ -63,23 +63,23 @@ namespace bp {
 			return ptr;
 		}
 		
-		BoxPtr<T>& operator=(BoxPtr<T>&& boxPtr) noexcept {
-			if(&boxPtr == this)
+		BoxPtr<T>& operator=(BoxPtr<T>&& box_ptr) noexcept {
+			if(&box_ptr == this)
 				return *this;
 			delete ptr;
-			ptr = boxPtr.ptr;
-			boxPtr.ptr = nullptr;
+			ptr = box_ptr.ptr;
+			box_ptr.ptr = nullptr;
 			return *this;
 		}
 		
-		BoxPtr<T>& operator=(const BoxPtr<T>& boxPtr) noexcept {
-			if(&boxPtr == this)
+		BoxPtr<T>& operator=(const BoxPtr<T>& box_ptr) noexcept {
+			if(&box_ptr == this)
 				return *this;
 			delete ptr;
 			if constexpr(std::is_abstract_v<T>)
-				ptr = boxPtr.ptr->copy();
+				ptr = box_ptr.ptr->copy();
 			else
-				ptr = new T{*boxPtr.ptr};
+				ptr = new T{*box_ptr.ptr};
 			return *this;
 		}
 		
@@ -97,14 +97,14 @@ namespace bp {
 	};
 	
 	template<typename R, typename T = R, typename ...As>
-	BoxPtr<R> makeBoxPtr(As&& ... args) {
+	BoxPtr<R> make_box_ptr(As&& ... args) {
 		return BoxPtr<R>{new T{std::forward<As>(args)...}};
 	}
 	
 	template<typename R, typename T>
-	BoxPtr<R> dynamicCast(BoxPtr<T>&& boxPtr) {
-		R* r = dynamic_cast<R*>(boxPtr.get());
-		boxPtr.set(nullptr);
+	BoxPtr<R> dynamic_box_cast(BoxPtr<T>&& box_ptr) {
+		R* r = dynamic_cast<R*>(box_ptr.get());
+		box_ptr.set(nullptr);
 		return BoxPtr<R>{r};
 	}
 }
