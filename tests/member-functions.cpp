@@ -23,6 +23,9 @@ TEST(member_functions, assignment_operator){
 	bp::BoxPtr<A> box_ptr {a};
 	bp::BoxPtr<A> box_ptr1 {a1};
 	box_ptr = box_ptr1;
+	ASSERT_TRUE(box_ptr.get() != nullptr);
+	ASSERT_TRUE(box_ptr1.get() != nullptr);
+	ASSERT_TRUE(box_ptr1.get() != box_ptr.get());
 	ASSERT_EQ(A::deleted, 1);
 	ASSERT_EQ(A::created, 3);
 }

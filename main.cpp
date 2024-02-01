@@ -1,5 +1,5 @@
 #include <iostream>
-#include <Box-Ptr/BoxPtr.hpp>
+#include <box-ptr/BoxPtr.hpp>
 
 class A{
 public:

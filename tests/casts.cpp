@@ -1,4 +1,5 @@
 #include "test-classes/test-classes.hpp"
+#include <variant>
 
 TEST(casts, dynamic) {
 	bp::BoxPtr<A> box_ptr__a{bp::make_box_ptr<A, D>(34)};

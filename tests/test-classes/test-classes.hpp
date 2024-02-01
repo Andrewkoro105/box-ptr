@@ -19,7 +19,6 @@ public:
 	static void clear();
 };
 
-
 class B {
 protected:
 	bp::BoxPtr<A> box_ptr;
