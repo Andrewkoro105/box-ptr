@@ -23,10 +23,10 @@ namespace bp {
 	}
 	
 	template<typename T_, bool Copyable_ = detail::copyable_v<T_> >
-	struct BoxPtr;
+	class BoxPtr;
 	
 	template<typename T_>
-	struct BoxPtr<T_, true> {
+	class BoxPtr<T_, true> {
 	protected:
 		T_* ptr;
 	
