@@ -79,7 +79,8 @@ namespace bp {
 			return *this;
 		}
 		
-		auto operator==(BoxPtr const& box_ptr) -> bool{
+		template<typename R, bool Copyable, typename = std::enable_if_t<std::is_base_of_v<T_, R> > >
+		auto operator==(BoxPtr<R, Copyable> const& box_ptr) -> bool{
 			return ptr == box_ptr.ptr;
 		}
 		
@@ -142,7 +143,8 @@ namespace bp {
 		
 		BoxPtr& operator=(BoxPtr const& box_ptr) = delete;
 		
-		auto operator==(BoxPtr const& box_ptr) -> bool{
+		template<typename R, bool Copyable, typename = std::enable_if_t<std::is_base_of_v<T_, R> > >
+		auto operator==(BoxPtr<R, Copyable> const& box_ptr) -> bool{
 			return ptr == box_ptr.ptr;
 		}
 		
