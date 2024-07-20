@@ -58,7 +58,7 @@ namespace bp {
 			other.set(nullptr);
 		}
 		
-		BoxPtr& operator=(BoxPtr&& box_ptr) noexcept {
+		auto operator=(BoxPtr&& box_ptr) noexcept -> BoxPtr&{
 			std::cout << "move\n";
 			if(&box_ptr == this)
 				return *this;
@@ -68,7 +68,7 @@ namespace bp {
 			return *this;
 		}
 		
-		BoxPtr& operator=(const BoxPtr& box_ptr) noexcept {
+		auto operator=(const BoxPtr& box_ptr) noexcept -> BoxPtr&{
 			if(&box_ptr == this)
 				return *this;
 			delete ptr;
@@ -79,24 +79,24 @@ namespace bp {
 			return *this;
 		}
 		
-		void reset(T_* ptr) {
+		auto reset(T_* ptr) -> void {
 			delete this->ptr;
 			this->ptr = ptr;
 		}
 		
-		void set(T_* ptr) {
+		auto set(T_* ptr) -> void {
 			this->ptr = ptr;
 		}
 		
-		T_* get() const {
+		auto get() const -> T_*{
 			return this->ptr;
 		}
 		
-		std::add_lvalue_reference_t<T_> operator*() const {
+		auto operator*() const -> std::add_lvalue_reference_t<T_>{
 			return *this->ptr;
 		}
 		
-		T_* operator->() const {
+		auto operator->() const -> T_*{
 			return this->ptr;
 		}
 		
@@ -138,24 +138,24 @@ namespace bp {
 		
 		BoxPtr& operator=(const BoxPtr& box_ptr) = delete;
 		
-		void reset(T_* ptr) {
+		auto reset(T_* ptr) -> void {
 			delete this->ptr;
 			this->ptr = ptr;
 		}
 		
-		void set(T_* ptr) {
+		auto set(T_* ptr) -> void {
 			this->ptr = ptr;
 		}
 		
-		T_* get() const {
+		auto get() const -> T_*{
 			return this->ptr;
 		}
 		
-		std::add_lvalue_reference_t<T_> operator*() const {
+		auto operator*() const -> std::add_lvalue_reference_t<T_>{
 			return *this->ptr;
 		}
 		
-		T_* operator->() const {
+		auto operator->() const -> T_*{
 			return this->ptr;
 		}
 		
@@ -165,12 +165,12 @@ namespace bp {
 	};
 	
 	template<typename R, typename T = R, typename ...As>
-	BoxPtr<R> make_box_ptr(As&& ... args) {
+	auto make_box_ptr(As&& ... args) -> BoxPtr<R>{
 		return BoxPtr<R>{new T{std::forward<As>(args)...}};
 	}
 	
 	template<typename R, typename T>
-	BoxPtr<R> dynamic_box_cast(BoxPtr<T>&& box_ptr) {
+	auto dynamic_box_cast(BoxPtr<T>&& box_ptr) -> BoxPtr<R> {
 		R* r = dynamic_cast<R*>(box_ptr.get());
 		box_ptr.set(nullptr);
 		return BoxPtr<R>{r};
