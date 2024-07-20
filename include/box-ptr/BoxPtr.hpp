@@ -34,7 +34,7 @@ namespace bp {
 		BoxPtr(T_* ptr = nullptr) : ptr(ptr) { // NOLINT(*-explicit-constructor)
 		}
 		
-		BoxPtr(const BoxPtr<T_, true>& other) :
+		BoxPtr(BoxPtr<T_, true> const& other) :
 			BoxPtr([&]() -> T_* {
 				if(other.ptr) {
 					if constexpr(std::is_abstract_v<T_> && detail::check_dyn_copyable<T_*>)
@@ -68,7 +68,7 @@ namespace bp {
 			return *this;
 		}
 		
-		auto operator=(const BoxPtr& box_ptr) noexcept -> BoxPtr&{
+		auto operator=(BoxPtr const& box_ptr) noexcept -> BoxPtr&{
 			if(&box_ptr == this)
 				return *this;
 			delete ptr;
@@ -114,7 +114,7 @@ namespace bp {
 		explicit BoxPtr(T_* ptr = nullptr) : ptr(ptr) {
 		}
 		
-		BoxPtr(const BoxPtr<T_, false>& other) = delete;
+		BoxPtr(BoxPtr<T_, false> const& other) = delete;
 		
 		template<bool Copyable>
 		BoxPtr(BoxPtr<T_, Copyable>&& other) noexcept : BoxPtr(other.ptr) {
@@ -136,7 +136,7 @@ namespace bp {
 			return *this;
 		}
 		
-		BoxPtr& operator=(const BoxPtr& box_ptr) = delete;
+		BoxPtr& operator=(BoxPtr const& box_ptr) = delete;
 		
 		auto reset(T_* ptr) -> void {
 			delete this->ptr;
