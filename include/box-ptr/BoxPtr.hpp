@@ -79,6 +79,10 @@ namespace bp {
 			return *this;
 		}
 		
+		auto operator==(BoxPtr const& box_ptr) -> bool{
+			return ptr == box_ptr.ptr;
+		}
+		
 		auto reset(T_* ptr) -> void {
 			delete this->ptr;
 			this->ptr = ptr;
@@ -137,6 +141,10 @@ namespace bp {
 		}
 		
 		BoxPtr& operator=(BoxPtr const& box_ptr) = delete;
+		
+		auto operator==(BoxPtr const& box_ptr) -> bool{
+			return ptr == box_ptr.ptr;
+		}
 		
 		auto reset(T_* ptr) -> void {
 			delete this->ptr;
