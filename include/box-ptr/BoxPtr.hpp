@@ -3,6 +3,7 @@
 #include <memory>
 #include <type_traits>
 #include <iostream>
+#include <hash_fun.h>
 
 namespace bp {
 	namespace detail {
@@ -185,3 +186,10 @@ namespace bp {
 		return BoxPtr<R>{r};
 	}
 }
+
+template<typename T_>
+struct std::hash<bp::BoxPtr<T_> >{
+	auto operator()(bp::BoxPtr<T_> const& box_ptr) const -> size_t{
+		return std::hash<T_>{}(*box_ptr);
+	}
+};
