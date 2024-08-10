@@ -2,7 +2,7 @@
 #include <variant>
 
 TEST(casts, dynamic) {
-	bp::BoxPtr<A> box_ptr__a{bp::make_box_ptr<A, D>(34)};
-	bp::BoxPtr<D> box_ptr__d{bp::dynamic_box_cast<D>(std::move(box_ptr__a))};
-	ASSERT_EQ(box_ptr__d->get_test_value(), 34);
+	auto box_ptr_a{bp::make_box_ptr<CreateDetector, ChildCreateDetector>(34)};
+	auto box_ptr_d{bp::dynamic_box_cast<ChildCreateDetector>(std::move(box_ptr_a))};
+	ASSERT_EQ(box_ptr_d->get_test_value(), 34);
 }

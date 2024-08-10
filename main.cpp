@@ -1,23 +1,23 @@
 #include <iostream>
 #include <box-ptr/BoxPtr.hpp>
 
-class A{
+class CreateDetector{
 public:
-	~A(){
+	~CreateDetector(){
 		std::cout << "delete A\n";
 	}
 };
 
-class B {
+class KeeperNullBoxBrt {
 protected:
-	bp::BoxPtr<A> box_ptr;
+	bp::BoxPtr<CreateDetector> box_ptr;
 	
 public:
-	explicit B(bp::BoxPtr<A> box_ptr) : box_ptr(new A{*box_ptr.get()}) {
+	explicit KeeperNullBoxBrt(bp::BoxPtr<CreateDetector> box_ptr) : box_ptr(new CreateDetector{*box_ptr.get()}) {
 	}
 };
 
 int main() {
-	B b{bp::make_box_ptr<A>()};
+	KeeperNullBoxBrt b{bp::make_box_ptr<CreateDetector>()};
 	return 0;
 }

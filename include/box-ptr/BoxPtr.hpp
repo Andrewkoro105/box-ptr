@@ -27,20 +27,17 @@ namespace bp {
 	
 	template<typename T_>
 	class BoxPtr<T_, true> {
-	protected:
-		T_* ptr;
-	
 	public:
-		BoxPtr(T_* ptr = nullptr) : ptr(ptr) { // NOLINT(*-explicit-constructor)
+		BoxPtr(T_* ptr = nullptr) : ptr_(ptr) { // NOLINT(*-explicit-constructor)
 		}
 		
 		BoxPtr(BoxPtr<T_, true> const& other) :
 			BoxPtr([&]() -> T_* {
-				if(other.ptr) {
+				if(other.ptr_) {
 					if constexpr(std::is_abstract_v<T_> && detail::check_dyn_copyable<T_*>)
-						return other.ptr->copy();
+						return other.ptr_->copy();
 					else
-						return new T_{*other.ptr};
+						return new T_{*other.ptr_};
 				} else {
 					return nullptr;
 				}
@@ -48,9 +45,9 @@ namespace bp {
 		}
 		
 		template<bool Copyable>
-		BoxPtr(BoxPtr<T_, Copyable>&& other) noexcept : BoxPtr(other.ptr) {
+		BoxPtr(BoxPtr<T_, Copyable>&& other) noexcept : BoxPtr(other.ptr_) {
 			if(&other != this)
-				other.ptr = nullptr;
+				other.ptr_ = nullptr;
 		}
 		
 		template<typename R, bool Copyable, typename = std::enable_if_t<std::is_base_of_v<T_, R> > >
@@ -59,72 +56,71 @@ namespace bp {
 		}
 		
 		auto operator=(BoxPtr&& box_ptr) noexcept -> BoxPtr&{
-			std::cout << "move\n";
 			if(&box_ptr == this)
 				return *this;
-			delete ptr;
-			ptr = box_ptr.ptr;
-			box_ptr.ptr = nullptr;
+			delete ptr_;
+			ptr_ = box_ptr.ptr_;
+			box_ptr.ptr_ = nullptr;
 			return *this;
 		}
 		
 		auto operator=(BoxPtr const& box_ptr) noexcept -> BoxPtr&{
 			if(&box_ptr == this)
 				return *this;
-			delete ptr;
+			delete ptr_;
 			if constexpr(std::is_abstract_v<T_>)
-				ptr = box_ptr.ptr->copy();
+				ptr_ = box_ptr.ptr_->copy();
 			else
-				ptr = new T_{*box_ptr.ptr};
+				ptr_ = new T_{*box_ptr.ptr_};
 			return *this;
 		}
 		
 		template<typename R, bool Copyable, typename = std::enable_if_t<std::is_base_of_v<T_, R> > >
 		auto operator==(BoxPtr<R, Copyable> const& box_ptr) const -> bool{
-			return ptr == box_ptr.ptr;
+			return ptr_ == box_ptr.ptr_;
 		}
 		
 		auto reset(T_* ptr) -> void {
-			delete this->ptr;
-			this->ptr = ptr;
+			delete this->ptr_;
+			this->ptr_ = ptr;
 		}
 		
 		auto set(T_* ptr) -> void {
-			this->ptr = ptr;
+			this->ptr_ = ptr;
 		}
 		
 		auto get() const -> T_*{
-			return this->ptr;
+			return this->ptr_;
 		}
 		
 		auto operator*() const -> std::add_lvalue_reference_t<T_>{
-			return *this->ptr;
+			return *this->ptr_;
 		}
 		
 		auto operator->() const -> T_*{
-			return this->ptr;
+			return this->ptr_;
 		}
 		
 		~BoxPtr() {
-			delete this->ptr;
+			delete this->ptr_;
 		}
+	
+	protected:
+		T_* ptr_;
 	};
 	
 	template<typename T_>
 	class BoxPtr<T_, false> {
-	protected:
-		T_* ptr;
-	
 	public:
-		explicit BoxPtr(T_* ptr = nullptr) : ptr(ptr) {
+		explicit BoxPtr(T_* ptr = nullptr) : ptr_(ptr) {
 		}
 		
 		BoxPtr(BoxPtr<T_, false> const& other) = delete;
 		
 		template<bool Copyable>
-		BoxPtr(BoxPtr<T_, Copyable>&& other) noexcept : BoxPtr(other.ptr) {
+		BoxPtr(BoxPtr<T_, Copyable>&& other) noexcept : BoxPtr(other.ptr_) {
 			if(&other != this)
-				other.ptr = nullptr;
+				other.ptr_ = nullptr;
 		}
 		
 		template<typename R, bool Copyable, typename = std::enable_if_t<std::is_base_of_v<T_, R> > >
@@ -135,9 +131,9 @@ namespace bp {
 		BoxPtr& operator=(BoxPtr&& box_ptr) noexcept {
 			if(&box_ptr == this)
 				return *this;
-			delete ptr;
-			ptr = box_ptr.ptr;
-			box_ptr.ptr = nullptr;
+			delete ptr_;
+			ptr_ = box_ptr.ptr_;
+			box_ptr.ptr_ = nullptr;
 			return *this;
 		}
 		
@@ -145,33 +141,36 @@ namespace bp {
 		
 		template<typename R, bool Copyable, typename = std::enable_if_t<std::is_base_of_v<T_, R> > >
 		auto operator==(BoxPtr<R, Copyable> const& box_ptr) const -> bool{
-			return ptr == box_ptr.ptr;
+			return ptr_ == box_ptr.ptr_;
 		}
 		
 		auto reset(T_* ptr) -> void {
-			delete this->ptr;
-			this->ptr = ptr;
+			delete this->ptr_;
+			this->ptr_ = ptr;
 		}
 		
 		auto set(T_* ptr) -> void {
-			this->ptr = ptr;
+			this->ptr_ = ptr;
 		}
 		
 		auto get() const -> T_*{
-			return this->ptr;
+			return this->ptr_;
 		}
 		
 		auto operator*() const -> std::add_lvalue_reference_t<T_>{
-			return *this->ptr;
+			return *this->ptr_;
 		}
 		
 		auto operator->() const -> T_*{
-			return this->ptr;
+			return this->ptr_;
 		}
 		
 		~BoxPtr() {
-			delete this->ptr;
+			delete this->ptr_;
 		}
+	
+	protected:
+		T_* ptr_;
 	};
 	
 	template<typename R, typename T = R, typename ...As>

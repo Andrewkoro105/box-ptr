@@ -3,47 +3,49 @@
 #include <gtest/gtest.h>
 #include <box-ptr/BoxPtr.hpp>
 
-class A{
+class CreateDetector{
 public:
 	static int deleted;
 	static int created;
 	static int exists;
-	A();
 	
-	A(const A& a);
+	CreateDetector();
+	
+	CreateDetector(const CreateDetector& a);
 	
 	virtual std::string get_name();
 	
-	~A();
+	~CreateDetector();
 	
 	static void clear();
 };
 
-class B {
-protected:
-	bp::BoxPtr<A> box_ptr;
-
+class KeeperNullBoxBrt {
 public:
-	explicit B();
+	explicit KeeperNullBoxBrt();
+	
+protected:
+	bp::BoxPtr<CreateDetector> box_ptr;
 };
 
 
-class C {
-protected:
-	bp::BoxPtr<A> box_ptr;
-
+class KeeperBoxBrt {
 public:
-	explicit C(const bp::BoxPtr<A>& box_ptr);
+	explicit KeeperBoxBrt(bp::BoxPtr<CreateDetector> const& box_ptr);
+
+protected:
+	bp::BoxPtr<CreateDetector> box_ptr;
 };
 
 
-class D : public A{
-protected:
-	int test_value;
+class ChildCreateDetector : public CreateDetector{
 public:
-	explicit D(int test_value);
+	explicit ChildCreateDetector(int test_value);
 	
 	std::string get_name() override;
 	
 	int get_test_value() const;
+	
+protected:
+	int test_value;
 };
