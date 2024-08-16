@@ -3,7 +3,6 @@
 #include <memory>
 #include <type_traits>
 #include <iostream>
-#include <hash_fun.h>
 
 namespace bp {
 	namespace detail {
